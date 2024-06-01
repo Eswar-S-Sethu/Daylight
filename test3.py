@@ -1,9 +1,46 @@
 # Import Required Library
 from tkinter import *
 import datetime
-import time,random
+import time,random,serial
 from playsound import playsound
 from threading import *
+
+ser = serial.Serial('/dev/ttyACM0', 9600)
+
+
+# Open serial connection
+ser = serial.Serial('/dev/ttyACM0', 9600)
+
+def calculate_comfort_and_random():
+    read_serial = ser.readline().decode('utf-8')  # Decode bytes to string
+    values = read_serial.split()  # Split the string by whitespace
+
+    comfort_level = None
+    random_number = None
+
+    if len(values) >= 6:  # Check if there are enough values
+        humidity = float(values[1])  # Convert to float
+        temperature = float(values[3])  # Convert to float
+        distance = float(values[5])  # Convert to float
+
+        # Update comfort_level and random_number based on conditions
+        if temperature < 20 and humidity > 70 and distance > 200:
+            comfort_level = "High"
+            random_number = random.randint(10, 99)  # Two-digit random number
+        elif temperature > 20 and humidity < 60:
+            comfort_level = "Medium"
+            random_number = random.randint(1, 9)  # One-digit random number
+        else:
+            comfort_level = "Low"
+            random_number = random.randint(1, 4)
+
+    return comfort_level, random_number
+
+# Calculate comfort_level and random_number once
+comfort_level, random_number = calculate_comfort_and_random()
+
+# Now you can use comfort_level and random_number anywhere in your program
+print("Comfort Level:", comfort_level, "Random Number:", random_number)
 
 set_alarm_time=""
 
@@ -86,8 +123,8 @@ def show_task_window():
     task_label.pack(pady=10)
 
     # Generate two random numbers for the task
-    num1 = random.randint(1, 100)
-    num2 = random.randint(1, 100)
+    num1 = random.randint(1, 100) + random_number
+    num2 = random.randint(1, 100) + random_number
 
     num1_label = Label(task_window, text=f"Number 1: {num1}", font=("Helvetica", 14))
     num1_label.pack()
