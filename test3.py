@@ -7,10 +7,6 @@ from threading import *
 
 ser = serial.Serial('/dev/ttyACM0', 9600)
 
-
-# Open serial connection
-ser = serial.Serial('/dev/ttyACM0', 9600)
-
 def calculate_comfort_and_random():
     read_serial = ser.readline().decode('utf-8')  # Decode bytes to string
     values = read_serial.split()  # Split the string by whitespace
@@ -19,22 +15,28 @@ def calculate_comfort_and_random():
     random_number = None
 
     if len(values) >= 6:  # Check if there are enough values
-        humidity = float(values[1])  # Convert to float
-        temperature = float(values[3])  # Convert to float
-        distance = float(values[5])  # Convert to float
+        humidity_str = values[1].replace("%", "")  # Remove "%" character
+        temperature_str = values[3]
+        distance_str = values[5]
 
-        # Update comfort_level and random_number based on conditions
-        if temperature < 20 and humidity > 70 and distance > 200:
-            comfort_level = "High"
-            random_number = random.randint(10, 99)  # Two-digit random number
-        elif temperature > 20 and humidity < 60:
-            comfort_level = "Medium"
-            random_number = random.randint(1, 9)  # One-digit random number
-        else:
-            comfort_level = "Low"
-            random_number = random.randint(1, 4)
+        try:
+            humidity = float(humidity_str)  # Convert to float
+            temperature = float(temperature_str)  # Convert to float
+            distance = float(distance_str)  # Convert to float
 
-    return comfort_level, random_number
+            # Update comfort_level and random_number based on conditions
+            if temperature < 20 and humidity > 70 and distance > 200:
+                comfort_level = "High"
+                random_number = random.randint(10, 99)  # Two-digit random number
+            elif temperature > 20 and humidity < 60:
+                comfort_level = "Medium"
+                random_number = random.randint(1, 9)  # One-digit random number
+            else:
+                comfort_level = "Low"
+                random_number = random.randint(1, 4)
+        except ValueError:
+            print("Error: Unable to convert values to float.")
+    return comfort_level,random_number
 
 # Calculate comfort_level and random_number once
 comfort_level, random_number = calculate_comfort_and_random()
