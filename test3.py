@@ -55,7 +55,6 @@ def show_idle_window():
 
 
 def show_task_success_window():
-    play_sound_loop(keepGoing=False)
     task_success_window = Toplevel()
     task_success_window.geometry("400x400")
     task_success_window.title("Task Success")

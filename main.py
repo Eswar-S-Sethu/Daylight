@@ -1,15 +1,12 @@
 import serial
 
-# Set the serial port and baud rate
-ser = serial.Serial('/dev/ttyACM0', 9600)  # Change '/dev/ttyACM0' to the appropriate port on your system
+ser = serial.Serial('/dev/ttyACM0', 9600)
 
-if ser.in_waiting > 0:
-    arduino_data = ser.readline().decode().strip()
-
-    # Split the received data into temperature, humidity, and distance
-    temperature, humidity, distance = arduino_data.split(',')
-
-    # Print the separated data
-    print("Temperature:", temperature)
-    print("Humidity:", humidity)
-    print("Distance:", distance)
+while True:
+    read_serial = ser.readline().decode('utf-8')  # Decode bytes to string
+    values = read_serial.split()  # Split the string by whitespace
+    if len(values) >= 6:  # Check if there are enough values
+        humidity = values[1]
+        temperature = values[3]
+        distance = values[5]
+        print("Humidity:", humidity, "Temperature:", temperature, "Distance:", distance)
