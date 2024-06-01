@@ -1,9 +1,18 @@
 import tkinter as tk
 from tkinter import ttk
 import time,random,json,asyncio,threading
-import python_weather as pyw
-import quote as qt
+import serial
 
+
+# Set the serial port and baud rate
+ser = serial.Serial('/dev/ttyACM0', 9600)  # Change '/dev/ttyACM0' to the appropriate port on your system
+
+
+if ser.in_waiting > 0:
+        arduino_data = ser.readline().decode().strip()
+
+        # Print the received data
+        print("Arduino Data:", arduino_data)
 
 # Function to add an alarm to the list and JSON file
 def add_alarm():
@@ -256,5 +265,6 @@ scrollbar.config(command=listbox.yview)
 listbox.pack(padx=10, pady=(0, 10), side="top", fill="both", expand=True)
 scrollbar.pack(side="right", fill="y")
 
+show_idle_window()
 
 root.mainloop()
