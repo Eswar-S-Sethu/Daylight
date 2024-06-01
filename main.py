@@ -1,19 +1,15 @@
-import tkinter as tk
-import pygame as pyg
-import pywhatkit as pywht
-import time
-import schedule as sch
-import calendar as cl
-import quote as qt
-import python_weather as pyw
+import serial
 
-alarmsListWindow=tk.Tk()
-alarmsListWindow.title("Alarms list")
-alarmsListWindow.geometry("400x400")
-allAlarmsLabel=tk.Label(alarmsListWindow,text="All alarms").pack()
-newAlarmButton=tk.Button(alarmsListWindow,text="New Alarm",relief=tk.GROOVE).pack()
+# Set the serial port and baud rate
+ser = serial.Serial('/dev/ttyACM0', 9600)  # Change '/dev/ttyACM0' to the appropriate port on your system
 
-if __name__ == '__main__':
-    alarmsListWindow.mainloop()
+if ser.in_waiting > 0:
+    arduino_data = ser.readline().decode().strip()
 
+    # Split the received data into temperature, humidity, and distance
+    temperature, humidity, distance = arduino_data.split(',')
 
+    # Print the separated data
+    print("Temperature:", temperature)
+    print("Humidity:", humidity)
+    print("Distance:", distance)
