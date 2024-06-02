@@ -5,6 +5,9 @@ import time,random,serial
 from playsound import playsound
 from threading import *
 
+comfort_level = None
+random_number = None
+
 ser = serial.Serial('/dev/ttyACM0', 9600)
 
 def calculate_comfort_and_random():
@@ -37,12 +40,8 @@ def calculate_comfort_and_random():
         random_number = 12
     return comfort_level,random_number
 
-# Calculate comfort_level and random_number once
-comfort_level, random_number = calculate_comfort_and_random()
 
 # Now you can use comfort_level and random_number anywhere in your program
-print("Comfort Level:", comfort_level, "Random Number:", random_number)
-
 set_alarm_time=""
 
 # Create Object
@@ -110,6 +109,8 @@ def show_task_success_window():
     show_idle_window()
 
 def show_task_window():
+    comfort_level, random_number = calculate_comfort_and_random()
+    # Calculate comfort_level and random_number once
     task_window = Toplevel()
     task_window.title("Task Window")
     task_window.geometry("400x400")
@@ -124,8 +125,8 @@ def show_task_window():
     task_label.pack(pady=10)
 
     # Generate two random numbers for the task
-    num1 = random.randint(1, 100) + random_number
-    num2 = random.randint(1, 100) + random_number
+    num1 = random.randint(1, 100) + int(random_number)
+    num2 = random.randint(1, 100) + int(random_number)
 
     num1_label = Label(task_window, text=f"Number 1: {num1}", font=("Helvetica", 14))
     num1_label.pack()

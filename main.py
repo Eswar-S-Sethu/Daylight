@@ -1,6 +1,8 @@
 import serial
 
+
 ser = serial.Serial('/dev/ttyACM0', 9600)
+
 
 while True:
     read_serial = ser.readline().decode('utf-8')  # Decode bytes to string
