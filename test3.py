@@ -11,9 +11,6 @@ def calculate_comfort_and_random():
     read_serial = ser.readline().decode('utf-8')  # Decode bytes to string
     values = read_serial.split()  # Split the string by whitespace
 
-    comfort_level = None
-    random_number = None
-
     if len(values) >= 6:  # Check if there are enough values
         humidity_str = values[1].replace("%", "")  # Remove "%" character
         temperature_str = values[3]
@@ -36,6 +33,8 @@ def calculate_comfort_and_random():
                 random_number = random.randint(1, 4)
         except ValueError:
             print("Error: Unable to convert values to float.")
+        comfort_level = "High"
+        random_number = 12
     return comfort_level,random_number
 
 # Calculate comfort_level and random_number once
