@@ -1,12 +1,13 @@
 # Import Required Library
 from tkinter import *
 import datetime
-import time,random,serial
+import time,random
+import serial
 from playsound import playsound
 from threading import *
 
-comfort_level = None
-random_number = None
+comfort_level = ""
+random_number = 0
 
 ser = serial.Serial('/dev/ttyACM0', 9600)
 
@@ -74,11 +75,9 @@ def show_idle_window():
     time_label.pack()
 
 
-    # Placeholder label for displaying username
     username_label = Label(idle_window, text="Eswar")
     username_label.pack(pady=5)
 
-    # Placeholder for displaying username
     username_value_label = Label(idle_window, text="", font=("Helvetica", 12))
     username_value_label.pack()
 
@@ -108,13 +107,16 @@ def show_task_success_window():
     task_success_window.after(10000, task_success_window.destroy)
     show_idle_window()
 
+def repeat_task():
+    show_task_window()
+
 def show_task_window():
     comfort_level, random_number = calculate_comfort_and_random()
-    # Calculate comfort_level and random_number once
     task_window = Toplevel()
     task_window.title("Task Window")
     task_window.geometry("400x400")
     task_window.attributes("-topmost", True)  # Ensure the task window is always on top
+
 
     # Function to close the task window
     def close_window():
@@ -127,10 +129,22 @@ def show_task_window():
     # Generate two random numbers for the task
     num1 = random.randint(1, 100) + int(random_number)
     num2 = random.randint(1, 100) + int(random_number)
+    randSum=num1+num2
 
-    num1_label = Label(task_window, text=f"Number 1: {num1}", font=("Helvetica", 14))
+    def checkSum():
+        sum=int(sum_entry.get())
+        if(sum==randSum):
+            show_task_success_window()
+            close_window()
+        else:
+            repeat_task()
+            close_window()
+
+        return
+    
+    num1_label=Label(task_window,text=f"Number 1:{num1}",font=("Helvetica",14))
     num1_label.pack()
-
+    
     num2_label = Label(task_window, text=f"Number 2: {num2}", font=("Helvetica", 14))
     num2_label.pack()
 
@@ -152,11 +166,12 @@ def show_task_window():
             task_window.after(1000, update_timer)  # Update every second
         else:
             close_window()
+            repeat_task()
 
     remaining_time = 15  # Timer set to 15 seconds
     update_timer()  # Start updating the timer
 
-    done_button = Button(task_window, text="Done", command=show_task_success_window)
+    done_button = Button(task_window, text="Done", command=checkSum)
     done_button.pack(pady=10)
 
 def show_alarm_window(alarm_time):
